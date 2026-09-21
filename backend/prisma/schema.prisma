@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique
+  username  String   @unique
+  password  String
+  avatar    String?
+  createdAt DateTime @default(now())
+
+  memberships ChatMember[]
+  messages    Message[]
+}
+
+model Chat {
+  id        String   @id @default(uuid()) @db.Uuid
+  isGroup   Boolean  @default(false)
+  name      String?
+  // Sorted "userIdA:userIdB" for 1-on-1 chats; the unique index stops duplicate private chats.
+  directKey String?  @unique
+  createdAt DateTime @default(now())
+
+  members  ChatMember[]
+  messages Message[]
+}
+
+model ChatMember {
+  id         String   @id @default(uuid()) @db.Uuid
+  chatId     String   @db.Uuid
+  userId     String   @db.Uuid
+  joinedAt   DateTime @default(now())
+  // Read receipts: everything in the chat up to this moment has been seen by this member.
+  lastReadAt DateTime @default(now())
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([chatId, userId])
+  @@index([userId])
+}
+
+model Message {
+  id        String   @id @default(uuid()) @db.Uuid
+  chatId    String   @db.Uuid
+  senderId  String   @db.Uuid
+  content   String?
+  fileUrl   String?  // relative path, e.g. /uploads/<uuid>.png
+  fileType  String?  // image | document | audio | video
+  fileName  String?  // original filename, for display
+  createdAt DateTime @default(now())
+
+  chat   Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender User @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([chatId, createdAt])
+}

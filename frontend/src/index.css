@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --color-ink: #14232e;
+  --color-ink-soft: #1f3646;
+  --color-mist: #eef2f3;
+  --color-harbor: #1e5b78;
+  --color-amber: #e0a13a;
+}
+
+html, body, #root { height: 100%; }
+body { background: var(--color-mist); }

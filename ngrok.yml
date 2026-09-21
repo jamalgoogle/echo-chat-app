@@ -1,0 +1,10 @@
+version: "2"
+authtoken: 3Jcb7csX3FDrjcccghLs3RmftAg_2DxLr87t1AWRPsbHYhKMy
+tunnels:
+  frontend:
+    proto: http
+    addr: 5173n
+    domain: dreamland-such-daydream.ngrok-free.dev
+  backend:
+    proto: http
+    addr: 5000
