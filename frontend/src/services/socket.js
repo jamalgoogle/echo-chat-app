@@ -5,7 +5,7 @@ let socket = null;
 
 export function connectSocket(token) {
   socket?.disconnect();
-  socket = io(API_URL, { auth: { token } });
+  socket = io(API_URL || undefined, { auth: { token } });
   return socket;
 }
 
